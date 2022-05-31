@@ -15,7 +15,7 @@ app = Flask(__name__)
 warnings.filterwarnings('ignore')
 
 #Читаем из файла наш датасет
-data = pd.read_csv('resourse/lenta-ru-news.csv', dtype={"url": "string", "title": "string", "text": "string", "topic": "string", "tags": "string", "date": "string"})
+data = pd.read_csv('resourse/file.csv', dtype={"url": "string", "title": "string", "text": "string", "topic": "string", "tags": "string", "date": "string"})
 data.sample(5)
 print(str(len(data)) + ' запросов считано')
 
