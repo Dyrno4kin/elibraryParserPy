@@ -4,8 +4,6 @@ import numpy as np
 from tqdm.auto import tqdm, trange
 import nltk
 import re
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn import metrics
 from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation, SpectralClustering, DBSCAN, MiniBatchKMeans
 from flask import Flask, jsonify
