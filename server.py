@@ -8,7 +8,7 @@ import werkzeug
 werkzeug.cached_property = werkzeug.utils.cached_property
 import flask.scaffold
 flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
-import flask_restful
+# import flask_restful
 from sklearn import metrics
 from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation, SpectralClustering, DBSCAN, MiniBatchKMeans
 from flask import Flask, jsonify, Blueprint
