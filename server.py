@@ -4,11 +4,48 @@ import numpy as np
 from tqdm.auto import tqdm, trange
 import nltk
 import re
+import werkzeug
+werkzeug.cached_property = werkzeug.utils.cached_property
+import flask.scaffold
+flask.helpers._endpoint_from_view_func = flask.scaffold._endpoint_from_view_func
+import flask_restful
 from sklearn import metrics
 from sklearn.cluster import KMeans, AgglomerativeClustering, AffinityPropagation, SpectralClustering, DBSCAN, MiniBatchKMeans
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Blueprint
+from flask_restplus import Api, Resource, fields
 
 app = Flask(__name__)
+blueprint = Blueprint('api', __name__, url_prefix='/api')
+api = Api(blueprint, doc='/documentation', title = "Article clustering API",
+		  description = "Bibliographic Information Clustering System") #,doc=False
+api.namespace('names', description='Manage names')
+
+app.register_blueprint(blueprint)
+
+app.config['SWAGGER_UI_JSONEDITOR'] = True
+
+# a_language = api.model('Language', {'language': fields.String('The language.')})  # , 'id' : fields.Integer('ID')
+#
+# languages = []
+# python = {'language': 'Python', 'id': 1}
+# languages.append(python)
+#
+#
+# @api.route('/language')
+# class Language(Resource):
+#
+#     @api.marshal_with(a_language, envelope='the_data')
+#     def get(self):
+#         return languages
+#
+#     @api.expect(a_language)
+#     def post(self):
+#         new_language = api.payload
+#         new_language['id'] = len(languages) + 1
+#         languages.append(new_language)
+#         return {'result': 'Language added'}, 201
+
+
 
 warnings.filterwarnings('ignore')
 
@@ -132,9 +169,38 @@ data1.append(({
         'Completeness': metrics.completeness_score(testTarget, mbk.labels_),
         'V-measure': metrics.v_measure_score(testTarget, mbk.labels_)}))
 
-@app.route('/api/statistics', methods=['GET'])
-def hello():
-    return jsonify({'data': data1})
+# @app.route('/api/statistics', methods=['GET'])
+# def get_statistics():
+#     return jsonify({'data': data1})
+
+# @app.route('/api/predict/<string:text>', methods=['GET'])
+# def get_predict_text(text):
+#     text_vec = tfidf_vectorizer.transform([text])
+#     predict = km.predict(text_vec)
+#     print(predict[0])
+#     return str(predict[0])
+
+a_cluster = api.model('Predict', {'Cluster': fields.String('Number of cluster.')})
+@api.route('/api/predict/<string:text>')
+class Predict(Resource):
+
+    # @api.marshal_with(a_cluster, envelope='the_cluster')
+    def get(self, text):
+        text_vec = tfidf_vectorizer.transform([text])
+        predict = km.predict(text_vec)
+        print(predict[0])
+        return str(predict[0])
+
+
+
+a_data = api.model('Data', {'data': fields.String('Result experiment.')})
+@api.route('/statistics')
+class Statistics(Resource):
+
+    @api.marshal_with(a_data, envelope='the_data')
+    def get(self):
+        return jsonify({'data': data1})
+
 
 if __name__ == "__main__":
     app.run()
