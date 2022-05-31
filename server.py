@@ -12,6 +12,9 @@ app = Flask(__name__)
 
 warnings.filterwarnings('ignore')
 
+nltk.download('stopwords')
+nltk.download('punkt')
+
 #Читаем из файла наш датасет
 data = pd.read_csv('resourse/file.csv', dtype={"url": "string", "title": "string", "text": "string", "topic": "string", "tags": "string", "date": "string"})
 data.sample(5)
@@ -45,6 +48,7 @@ def token_and_stem(text):
             filtered_tokens.append(token)
     stems = [stemmer.stem(t) for t in filtered_tokens]
     return stems
+
 
 stopwords = nltk.corpus.stopwords.words('russian')
 stopwords.extend(['что', 'это', 'так', 'вот', 'быть', 'как', 'в', 'к', 'на'])
